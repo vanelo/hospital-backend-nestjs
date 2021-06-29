@@ -1,5 +1,6 @@
 import { registerAs } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { User } from 'src/auth/user.entity';
 
 export default registerAs(
   'orm.config',
@@ -10,7 +11,7 @@ export default registerAs(
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [],
+    entities: [User],
     synchronize: true,  // Automatically update the database schema. Use only in development envirnment because some changes need data migrations
     dropSchema: Boolean(parseInt(process.env.DB_DROP_SCHEMA))
   })
