@@ -3,6 +3,7 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { User } from 'src/auth/user.entity';
 import { ClinicalSpecialty } from 'src/clinical-specialty/clinical-specialty.entity';
 import { Consultation } from 'src/consultation/consultation.entity';
+import { Exam } from 'src/exam/exam.entity';
 
 export default registerAs(
   'orm.config',
@@ -13,7 +14,7 @@ export default registerAs(
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [User, ClinicalSpecialty, Consultation],
+    entities: [User, ClinicalSpecialty, Consultation, Exam],
     synchronize: false,
     dropSchema: false
   })

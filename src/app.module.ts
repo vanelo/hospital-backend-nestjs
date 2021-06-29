@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { ClinicalSpecialtyModule } from './clinical-specialty/clinical-specialty.module';
 import { ConsultationModule } from './consultation/consultation.module';
+import { ExamModule } from './exam/exam.module';
 import ormConfig from './config/orm.config';
 import ormConfigProd from './config/orm.config.prod';
 
@@ -23,7 +24,8 @@ import ormConfigProd from './config/orm.config.prod';
     }),
     AuthModule,
     ClinicalSpecialtyModule,
-    ConsultationModule
+    ConsultationModule,
+    ExamModule
   ],
   controllers: [AppController],
   providers: [AppService]
