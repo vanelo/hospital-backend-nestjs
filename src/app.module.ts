@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { ClinicalSpecialtyModule } from './clinical-specialty/clinical-specialty.module';
 import ormConfig from './config/orm.config';
 import ormConfigProd from './config/orm.config.prod';
 
@@ -19,7 +20,8 @@ import ormConfigProd from './config/orm.config.prod';
       useFactory: process.env.NODE_ENV !== 'production'
         ? ormConfig : ormConfigProd
     }),
-    AuthModule
+    AuthModule,
+    ClinicalSpecialtyModule
   ],
   controllers: [AppController],
   providers: [AppService]

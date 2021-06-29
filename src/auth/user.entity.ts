@@ -1,5 +1,6 @@
 import { Expose } from "class-transformer";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { ClinicalSpecialty } from "src/clinical-specialty/clinical-specialty.entity";
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 
 export enum SexEnum{
     Other=1,
@@ -62,4 +63,14 @@ export class User {
     })
     @Expose()
     address: string;
+
+    @Column({
+        nullable: true
+    })
+    @Expose()
+    profesionalRegisterNumber: string;
+
+    @ManyToMany(()=> ClinicalSpecialty, (clinicalSpecialty)=> clinicalSpecialty.users)
+    @Expose()
+    clinicalSpecialties: ClinicalSpecialty[];
 }
