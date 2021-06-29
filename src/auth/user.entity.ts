@@ -1,6 +1,7 @@
 import { Expose } from "class-transformer";
 import { ClinicalSpecialty } from "src/clinical-specialty/clinical-specialty.entity";
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Consultation } from "src/consultation/consultation.entity";
+import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 export enum SexEnum{
     Other=1,
@@ -73,4 +74,16 @@ export class User {
     @ManyToMany(()=> ClinicalSpecialty, (clinicalSpecialty)=> clinicalSpecialty.users)
     @Expose()
     clinicalSpecialties: ClinicalSpecialty[];
+
+    @OneToMany(() => Consultation, (consultation) => consultation.patient, {
+        cascade: true
+    })
+    @Expose()
+    patientConsultations: Consultation[]
+
+    @OneToMany(() => Consultation, (consultation) => consultation.doctor, {
+        cascade: true
+    })
+    @Expose()
+    doctorConsultations: User[]
 }

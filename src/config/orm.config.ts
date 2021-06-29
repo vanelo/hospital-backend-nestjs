@@ -2,6 +2,7 @@ import { registerAs } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { User } from 'src/auth/user.entity';
 import { ClinicalSpecialty } from 'src/clinical-specialty/clinical-specialty.entity';
+import { Consultation } from 'src/consultation/consultation.entity';
 
 export default registerAs(
   'orm.config',
@@ -12,7 +13,7 @@ export default registerAs(
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [User, ClinicalSpecialty],
+    entities: [User, ClinicalSpecialty, Consultation],
     synchronize: true,  // Automatically update the database schema. Use only in development envirnment because some changes need data migrations
     dropSchema: Boolean(parseInt(process.env.DB_DROP_SCHEMA))
   })
