@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { AuthService } from "./auth.service";
 import { CreateUserDto } from "./input/create.user.dto";
-import { User } from "./user.entity";
+import { SexEnum, User } from "./user.entity";
 
 @Controller('users')
 export class UsersController {
@@ -15,7 +15,12 @@ export class UsersController {
 
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
-    const user = new User();
+    const passwordHash = await this.authService.hashPassword(createUserDto.password);
+    const user = new User({
+      ...createUserDto,
+      password: passwordHash,
+      birthdate: new Date(createUserDto.birthdate)
+    });
 
     if (createUserDto.password !== createUserDto.retypedPassword) {
       throw new BadRequestException(['Passwords are not identical']);
@@ -32,11 +37,11 @@ export class UsersController {
       throw new BadRequestException(['username or email is already taken']);
     }
 
-    user.username = createUserDto.username;
-    user.password = await this.authService.hashPassword(createUserDto.password);
-    user.email = createUserDto.email;
-    user.firstName = createUserDto.firstName;
-    user.lastName = createUserDto.lastName;
+    // user.username = createUserDto.username;
+    // user.password = await this.authService.hashPassword(createUserDto.password);
+    // user.email = createUserDto.email;
+    // user.firstName = createUserDto.firstName;
+    // user.lastName = createUserDto.lastName;
 
     return {
       ...(await this.userRepository.save(user)),

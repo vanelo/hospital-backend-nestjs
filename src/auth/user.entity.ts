@@ -12,6 +12,10 @@ export enum SexEnum{
 
 @Entity()
 export class User {
+    constructor(partial?: Partial<User>) {
+        Object.assign(this, partial);
+    }
+
     @PrimaryGeneratedColumn()
     @Expose()
     id: number;
