@@ -1,16 +1,21 @@
 import { Expose } from "class-transformer";
 import { User } from "src/auth/user.entity";
+import { PaginationResult } from "src/pagination/paginator";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Exam {
+    constructor(partial?: Partial<Exam>) {
+        Object.assign(this, partial);
+    }
+
     @PrimaryGeneratedColumn()
     @Expose()
     id: number;
 
     @Column()
     @Expose()
-    name: number;
+    name: string;
 
     @Column()
     @Expose()
@@ -18,13 +23,17 @@ export class Exam {
 
     @Column()
     @Expose()
-    starDate: Date;
+    startDate: Date;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     @Expose()
     endDate: Date;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     @Expose()
     results: string;
 
@@ -42,3 +51,5 @@ export class Exam {
     @JoinColumn()
     doctor: User;
 }
+
+export type PaginatedExams = PaginationResult<Exam>;
