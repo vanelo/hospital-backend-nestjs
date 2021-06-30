@@ -35,7 +35,7 @@ export class ConsultationController {
             {
             total: true,
             currentPage: filter.page,
-            limit: 2
+            limit: 10
             }
         );
         return consultations;

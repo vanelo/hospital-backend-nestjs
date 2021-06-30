@@ -29,29 +29,37 @@ export class ConsultationService {
         let query = this.getConsultationsBaseQuery();
 
         if (!filter) {
-        return query;
+            return query;
         }
 
         if (filter.startDate) {
-        if (filter.startDate == StartDateConsultationsFilter.Today) {
-            query = query.andWhere(
-            `c.startAtDate >= CURDATE() AND c.startAtDate <= CURDATE() + INTERVAL 1 DAY`
-            );
+            if (filter.startDate == StartDateConsultationsFilter.Today) {
+                query = query.andWhere(
+                `c.startAtDate >= CURDATE() AND c.startAtDate <= CURDATE() + INTERVAL 1 DAY`
+                );
+            }
+
+            if (filter.startDate == StartDateConsultationsFilter.Tommorow) {
+                query = query.andWhere(
+                `c.startDate >= CURDATE() + INTERVAL 1 DAY AND c.startDate <= CURDATE() + INTERVAL 2 DAY`
+                );
+            }
+
+            if (filter.startDate == StartDateConsultationsFilter.ThisWeek) {
+                query = query.andWhere('YEARWEEK(c.startDate, 1) = YEARWEEK(CURDATE(), 1)');
+            }
+
+            if (filter.startDate == StartDateConsultationsFilter.NextWeek) {
+                query = query.andWhere('YEARWEEK(e.startDate, 1) = YEARWEEK(CURDATE(), 1) + 1');
+            }
         }
 
-        if (filter.startDate == StartDateConsultationsFilter.Tommorow) {
-            query = query.andWhere(
-            `c.startDate >= CURDATE() + INTERVAL 1 DAY AND c.startDate <= CURDATE() + INTERVAL 2 DAY`
-            );
+        if(filter.patientId){
+            query = query.andWhere(`c.patientId = ${filter.patientId}`)
         }
 
-        if (filter.startDate == StartDateConsultationsFilter.ThisWeek) {
-            query = query.andWhere('YEARWEEK(c.startDate, 1) = YEARWEEK(CURDATE(), 1)');
-        }
-
-        if (filter.startDate == StartDateConsultationsFilter.NextWeek) {
-            query = query.andWhere('YEARWEEK(e.startDate, 1) = YEARWEEK(CURDATE(), 1) + 1');
-        }
+        if(filter.doctorId){
+            query = query.andWhere(`c.doctorId = ${filter.doctorId}`)
         }
 
         return query;
