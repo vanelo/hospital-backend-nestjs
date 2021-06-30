@@ -5,8 +5,9 @@ import { User } from "./user.entity";
 
 @Injectable()
 export class AuthService {
+  static findOne: any;
   constructor(
-    private readonly jwtService: JwtService,
+    private readonly jwtService: JwtService
   ) { }
 
   public getTokenForUser(user: User): string {
@@ -19,4 +20,5 @@ export class AuthService {
   public async hashPassword(password: string): Promise<string> {
     return await bcrypt.hash(password, 10);
   }
+
 }

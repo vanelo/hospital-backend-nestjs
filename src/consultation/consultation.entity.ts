@@ -5,6 +5,10 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "t
 
 @Entity()
 export class Consultation{
+    constructor(partial?: Partial<Consultation>) {
+        Object.assign(this, partial);
+    }
+
     @PrimaryGeneratedColumn()
     @Expose()
     id: number;
@@ -31,15 +35,21 @@ export class Consultation{
     @Expose()
     startDate: Date;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     @Expose()
     endDate: Date;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     @Expose()
     diagnosis: string;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     @Expose()
     recomendations: string;
 }

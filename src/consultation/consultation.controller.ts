@@ -1,17 +1,25 @@
-import { NotFoundException, Param, ParseIntPipe, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, ForbiddenException, NotFoundException, Param, ParseIntPipe, Post, UseGuards, UsePipes } from '@nestjs/common';
 import { ValidationPipe } from '@nestjs/common';
 import { ClassSerializerInterceptor } from '@nestjs/common';
 import { UseInterceptors } from '@nestjs/common';
 import { Controller, Get, Query, Logger } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { AuthGuardJwt } from 'src/auth/auth-guard.jwt';
+import { AuthService } from 'src/auth/auth.service';
+import { CurrentUser } from 'src/auth/current-user.decorator';
+import { User } from 'src/auth/user.entity';
+import { Repository } from 'typeorm';
 import { ConsultationService } from './consultation.service';
+import { CreateConsultationDto } from './input/create.consultation.dto';
 import { ListConsultations } from './input/list.consultations';
 
 @Controller('consultations')
 export class ConsultationController {
     private readonly logger = new Logger(ConsultationController.name);
     constructor(
-        private readonly consultationService: ConsultationService
+        private readonly consultationService: ConsultationService,
+        @InjectRepository(User)
+        private readonly usersRepository: Repository<User>
     ){ }
 
 
@@ -41,9 +49,30 @@ export class ConsultationController {
         const consultation = await this.consultationService.getConsultationWithPatient(id);
 
         if (!consultation) {
-        throw new NotFoundException();
+            throw new NotFoundException();
         }
 
         return consultation;
+    }
+
+    // Create a consultation
+    @Post()
+    @UseGuards(AuthGuardJwt)
+    @UseInterceptors(ClassSerializerInterceptor)
+    async create(
+        @Body() input: CreateConsultationDto
+    ) {
+        // Get doctor
+        const doctor = await this.usersRepository.findOne(input.doctorId);
+
+        // Verify if the user is a doctor
+        if(!doctor.profesionalRegisterNumber){
+            throw new ForbiddenException();
+        }
+
+        // Get patient
+        const patient = await this.usersRepository.findOne(input.patientId);
+        return await this.consultationService
+            .createConsultation(input, doctor, patient);
     }
 }

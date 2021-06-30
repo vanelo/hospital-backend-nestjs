@@ -1,9 +1,9 @@
 export class ListConsultations {
-  startAt?: StartAtConsultationsFilter = StartAtConsultationsFilter.All;
+  startDate?: StartDateConsultationsFilter = StartDateConsultationsFilter.All;
   page: number = 1;
 }
 
-export enum StartAtConsultationsFilter {
+export enum StartDateConsultationsFilter {
   All = 1,
   Today,
   Tommorow,
