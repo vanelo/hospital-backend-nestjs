@@ -7,6 +7,7 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Consultation, PaginatedConsultations } from './consultation.entity';
 import { CreateConsultationDto } from './input/create.consultation.dto';
 import { ListConsultations, StartDateConsultationsFilter } from './input/list.consultations';
+import { UpdateConsultationDto } from './input/update.consultation.dto';
 
 @Injectable()
 export class ConsultationService {
@@ -94,7 +95,21 @@ export class ConsultationService {
                 ...input,
                 doctor: doctor,
                 patient: patient,
-                startDate: new Date(input.startDate)
+                startDate: new Date(input.startDate),
+                endDate: input.endDate ? new Date(input.endDate) : undefined
+            })
+        );
+    }
+
+    public async updateConsultation(
+        consultation: Consultation, input: UpdateConsultationDto
+    ): Promise<Consultation> {
+        return await this.consultationsRepository.save(
+            new Consultation({
+                ...consultation,
+                ...input,
+                startDate: input.startDate ? new Date(input.startDate) : consultation.startDate,
+                endDate: input.endDate ? new Date(input.endDate) : consultation.endDate
             })
         );
     }

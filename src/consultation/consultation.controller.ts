@@ -1,4 +1,4 @@
-import { Body, ForbiddenException, NotFoundException, Param, ParseIntPipe, Post, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, ForbiddenException, NotFoundException, Param, ParseIntPipe, Patch, Post, UseGuards, UsePipes } from '@nestjs/common';
 import { ValidationPipe } from '@nestjs/common';
 import { ClassSerializerInterceptor } from '@nestjs/common';
 import { UseInterceptors } from '@nestjs/common';
@@ -9,9 +9,11 @@ import { AuthService } from 'src/auth/auth.service';
 import { CurrentUser } from 'src/auth/current-user.decorator';
 import { User } from 'src/auth/user.entity';
 import { Repository } from 'typeorm';
+import { Consultation } from './consultation.entity';
 import { ConsultationService } from './consultation.service';
 import { CreateConsultationDto } from './input/create.consultation.dto';
 import { ListConsultations } from './input/list.consultations';
+import { UpdateConsultationDto } from './input/update.consultation.dto';
 
 @Controller('consultations')
 export class ConsultationController {
@@ -19,7 +21,9 @@ export class ConsultationController {
     constructor(
         private readonly consultationService: ConsultationService,
         @InjectRepository(User)
-        private readonly usersRepository: Repository<User>
+        private readonly usersRepository: Repository<User>,
+         @InjectRepository(Consultation)
+        private readonly consultationsRepository: Repository<Consultation>
     ){ }
 
 
@@ -74,5 +78,29 @@ export class ConsultationController {
         const patient = await this.usersRepository.findOne(input.patientId);
         return await this.consultationService
             .createConsultation(input, doctor, patient);
+    }
+
+    // Update consultation
+    @Patch(':id')
+    @UseGuards(AuthGuardJwt)
+    @UseInterceptors(ClassSerializerInterceptor)
+    async update(
+    @Param('id', ParseIntPipe) id,
+    @Body() input: UpdateConsultationDto,
+    @CurrentUser() user: User
+    ) {
+        const consultation = await this.consultationsRepository.findOne(id);
+
+        if (!consultation) {
+            throw new NotFoundException();
+        }
+
+        if (!user.profesionalRegisterNumber) {
+            throw new ForbiddenException(
+            null, `You are not authorized to change this consultation`
+            );
+        }
+
+        return await this.consultationService.updateConsultation(consultation, input);
     }
 }

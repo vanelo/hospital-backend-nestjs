@@ -1,4 +1,4 @@
-import { IsDateString, IsString, Length } from "class-validator";
+import { IsDateString, IsString, Length, IsOptional } from "class-validator";
 
 export class CreateConsultationDto {
   @IsString()
@@ -13,4 +13,8 @@ export class CreateConsultationDto {
 
   @IsDateString()
   startDate: string;
+
+  @IsDateString()
+  @IsOptional()
+  endDate: string;
 }
