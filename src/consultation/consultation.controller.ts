@@ -32,4 +32,18 @@ export class ConsultationController {
         );
         return consultations;
     }
+
+    // Get single consultation
+    @Get(':id')
+    @UseGuards(AuthGuardJwt)
+    @UseInterceptors(ClassSerializerInterceptor)
+    async findOne(@Param('id', ParseIntPipe) id: number) {
+        const consultation = await this.consultationService.getConsultationWithPatient(id);
+
+        if (!consultation) {
+        throw new NotFoundException();
+        }
+
+        return consultation;
+    }
 }
