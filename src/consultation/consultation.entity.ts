@@ -1,5 +1,6 @@
 import { Expose } from "class-transformer";
 import { User } from "src/auth/user.entity";
+import { PaginationResult } from "src/pagination/paginator";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
@@ -42,3 +43,5 @@ export class Consultation{
     @Expose()
     recomendations: string;
 }
+
+export type PaginatedConsultations = PaginationResult<Consultation>;
