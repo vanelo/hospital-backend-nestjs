@@ -17,7 +17,9 @@ export class AuthController {
   async login(@CurrentUser() user: User) {
     return {
       userId: user.id,
-      token: this.authService.getTokenForUser(user)
+      username: user.username,
+      roles: user.profesionalRegisterNumber ? ["PATIENT", "DOCTOR"] : ["PATIENT"],
+      accessToken: this.authService.getTokenForUser(user)
     }
   }
 
@@ -25,6 +27,9 @@ export class AuthController {
   @UseGuards(AuthGuardJwt)
   @UseInterceptors(ClassSerializerInterceptor)
   async getProfile(@CurrentUser() user: User) {
-    return user;
+    return {
+      ...user,
+      roles: user.profesionalRegisterNumber ? ["PATIENT", "DOCTOR"] : ["PATIENT"]
+    };
   }
 }
