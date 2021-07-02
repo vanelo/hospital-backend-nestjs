@@ -3,6 +3,7 @@ import { ClinicalSpecialty } from "src/clinical-specialty/clinical-specialty.ent
 import { Consultation } from "src/consultation/consultation.entity";
 import { Exam } from "src/exam/exam.entity";
 import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { PaginationResult } from "src/pagination/paginator";
 
 export enum SexEnum{
     Other=1,
@@ -104,3 +105,5 @@ export class User {
     @Expose()
     doctorExams: User[]
 }
+
+export type PaginatedUsers = PaginationResult<User>;

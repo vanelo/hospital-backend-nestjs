@@ -1,14 +1,18 @@
-import { BadRequestException, Body, Controller, Post } from "@nestjs/common";
+import { BadRequestException, Body, ClassSerializerInterceptor, Controller, Get, Post, Query, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import { AuthGuardJwt } from "./auth-guard.jwt";
 import { AuthService } from "./auth.service";
+import { UserService } from "./users.service";
 import { CreateUserDto } from "./input/create.user.dto";
 import { SexEnum, User } from "./user.entity";
+import { ListUsers, BirthdateUsersFilter } from './input/list.users';
 
 @Controller('users')
 export class UsersController {
   constructor(
     private readonly authService: AuthService,
+    private readonly userService: UserService,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>
   ) { }
@@ -45,4 +49,22 @@ export class UsersController {
     }
   }
 
+
+    // Get users
+    @Get()
+    @UsePipes(new ValidationPipe({ transform: true }))
+    @UseGuards(AuthGuardJwt)
+    @UseInterceptors(ClassSerializerInterceptor)
+    async findAll(@Query() filter: ListUsers) {
+        const users = await this.userService
+        .getUsersFilteredPaginated(
+            filter,
+            {
+            total: true,
+            currentPage: filter.page,
+            limit: 10
+            }
+        );
+        return users;
+    }
 }
