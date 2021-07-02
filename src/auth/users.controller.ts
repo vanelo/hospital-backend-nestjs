@@ -22,10 +22,6 @@ export class UsersController {
       birthdate: new Date(createUserDto.birthdate)
     });
 
-    if (createUserDto.password !== createUserDto.retypedPassword) {
-      throw new BadRequestException(['Passwords are not identical']);
-    }
-
     const existingUser = await this.userRepository.findOne({
       where: [
         { username: createUserDto.username },
